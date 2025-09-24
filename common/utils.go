@@ -143,19 +143,24 @@ func Max(a int, b int) int {
 		return b
 	}
 }
-
+//修复推送时消息在markdown下少了换行的问题
 func Markdown2HTML(markdown string) (HTML string, err error) {
 	if markdown == "" {
 		return "", nil
 	}
+
+	// 预处理：在单个回车前添加两个空格
+	processed := strings.ReplaceAll(markdown, "\n", "  \n")
+
 	var buf bytes.Buffer
 	goldMarkEntity := goldmark.New(
 		goldmark.WithExtensions(
 			extension.GFM,
-			extension.Footnote,
+			extension。Footnote,
 		),
 	)
-	err = goldMarkEntity.Convert([]byte(markdown), &buf)
+	// 使用处理后的内容进行转换
+	err = goldMarkEntity。Convert([]byte(processed), &buf)
 	if err != nil {
 		return fmt.Sprintf("Markdown 渲染出错：%s", err.Error()), err
 	}
